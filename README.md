@@ -1,6 +1,6 @@
 # suii_manipulation
 
-UR3 manipulation package for mobile robot Suii. This package is used to do pick and place tasks with the UR3 robotic arm on top of Suii. This README is used to explain how to install the suii_manipulation and the other required packages, and what steps must be taken to get everything running.
+UR3 manipulation package for mobile robot Suii. This package is used to do pick and place tasks with the UR3 robotic arm on top of Suii. This README is used to explain how to install the suii_manipulation and the other required packages, and what steps must be taken to get everything running. If you to know more about this package you can visit the suii_manipulation [wiki](https://github.com/RoboHubEindhoven/suii_manipulation/wiki)
 
 ## Prerequisites
 
