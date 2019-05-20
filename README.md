@@ -28,6 +28,12 @@ git clone https://github.com/ros-industrial/universal_robot.git
 
 **You will need to add the ur3_suii.launch launch file that is uploaded to this github, to the ur_modern_driver/launch folder.**
 
+The final package you will need are the Suii packages. These packages are located in [this github repository](https://github.com/RoboHubEindhoven/suii.git). To install these packages run the following lines.
+
+```
+cd catkin_ws/src
+git clone https://github.com/RoboHubEindhoven/suii.git
+```
 
 ## Installing suii_manipulation package
 
@@ -54,7 +60,7 @@ If this runs without errors, the package is installed correctly.
 
 ## Using UR simulator
 
-It is also possible to use the simulator of UR. To use this with the Suii robot model you will need the suii_description package. This package is located in [this github repository](https://github.com/RoboHubEindhoven/suii.git). You also will need the UR offline simulator. The offline simulator is available [here](https://www.universal-robots.com/download/?option=16594#section16593). We used version 3.4.5-100, this worked for us. After downloading the offline simulator, unpack it in a folder you prefer.
+It is also possible to use the simulator of UR. The offline simulator is available [here](https://www.universal-robots.com/download/?option=16594#section16593). We used version 3.4.5-100, this worked for us. After downloading the offline simulator, unpack it in a folder you prefer.
 
 ### Test offline simulator
 
