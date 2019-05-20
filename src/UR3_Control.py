@@ -73,10 +73,10 @@ class RobotArmActionServer():
             self.waitForArm()
             
             if picking == "Pick":
-                self.moveGripper("Open")
+                self.moveGripper("Close")
                 time.sleep(1)
             elif picking == "Place":
-                self.moveGripper("Close")
+                self.moveGripper("Open")
                 time.sleep(1)
 
             self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder1')))
@@ -89,10 +89,10 @@ class RobotArmActionServer():
             self.waitForArm()
             
             if picking == "Pick":
-                self.moveGripper("Open")
+                self.moveGripper("Close")
                 time.sleep(1)
             elif picking == "Place":
-                self.moveGripper("Close")
+                self.moveGripper("Open")
                 time.sleep(1)
 
             self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder2')))
@@ -105,10 +105,10 @@ class RobotArmActionServer():
             self.waitForArm()
 
             if picking == "Pick":
-                self.moveGripper("Open")
+                self.moveGripper("Close")
                 time.sleep(1)
             elif picking == "Place":
-                self.moveGripper("Close")
+                self.moveGripper("Open")
                 time.sleep(1)
 
             self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder2')))
@@ -214,7 +214,7 @@ class RobotArmActionServer():
 
 # ----------Service Callbacks----------
     def scan_cb(self, msg):
-
+	self.moveGripper("Open")
         self.scanTarget = msg.target
         scanPose = "scanPosition%s" % self.scanTarget
 

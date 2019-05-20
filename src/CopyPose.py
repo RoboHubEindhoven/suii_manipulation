@@ -28,7 +28,7 @@ class CopyPose(object):
 
         self.saved_pos = JointState.position
         self.saved_poses = {}
-        self.adr = '/home/remco/catkin_ws/src/ur_script_control/yaml/poses.yaml'
+        self.adr = '/home/suii/catkin_ws/src/ur_script_control/yaml/poses.yaml'
         
         self.savingPose()
 
