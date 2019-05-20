@@ -22,7 +22,6 @@ The next thing you will need to install is the universal_robot package. You can 
 
 ```
 cd catkin_ws/src
-```
 https://github.com/ros-industrial/universal_robot.git
 ```
 **Beaware that you need to change the universal_robot/ur_driver/src/ur_driver/src/io_interface.py to the io_interface.py that is uploaded to this github. Copy it and paste it in your catkin_ws/src/universal_robot/ur_driver/src/ur_driver/src. Don't forget to delete the old one.**
@@ -36,9 +35,7 @@ To install the suii_manipulation package in your catkin workspace, you will need
 
 ```
 cd catkin_ws/src
-```
 git clone https://github.com/RoboHubEindhoven/suii_manipulation.git
-```
 catkin_make
 ```
 
@@ -48,7 +45,6 @@ To test if your package is installed correctly run:
 
 ```
 roslaunch ur_modern_driver ur3_suii.launch
-```
 rosrun suii_manipulation UR3Control.py
 ```
 
@@ -64,9 +60,7 @@ To test the offline simulator, run the following line from the folder where your
 
 ```
 ./ursim-3.4.5-100/start-ursim.sh UR3
-```
 roslaunch suii_description display.launch
-```
 roslaunch ur_modern_driver ur3_suii.launch robot_ip:=localhost
 ```
 To check if the Suii and the UR3 models are loaded:
