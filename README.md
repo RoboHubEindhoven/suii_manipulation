@@ -43,6 +43,8 @@ catkin_make
 
 To test if your package is installed correctly run:
 
+**This needs to run on Suii, if want to test on another device look to the next chapter (Using UR simulator)**
+
 ```
 roslaunch ur_modern_driver ur3_suii.launch
 rosrun suii_manipulation UR3Control.py
