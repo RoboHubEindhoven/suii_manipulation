@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/remco/catkin_ws/src/ur_script_control/build/devel/setup.sh
