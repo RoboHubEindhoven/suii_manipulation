@@ -22,7 +22,7 @@ The next thing you will need to install is the universal_robot package. You can 
 
 ```
 cd catkin_ws/src
-https://github.com/ros-industrial/universal_robot.git
+git clone https://github.com/ros-industrial/universal_robot.git
 ```
 **Beaware that you need to change the universal_robot/ur_driver/src/ur_driver/src/io_interface.py to the io_interface.py that is uploaded to this github. Copy it and paste it in your catkin_ws/src/universal_robot/ur_driver/src/ur_driver/src. Don't forget to delete the old one.**
 
