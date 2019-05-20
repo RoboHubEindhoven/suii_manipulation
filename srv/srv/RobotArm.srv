@@ -1,8 +1,0 @@
-# Goal 
-string command
-string holder
-object_pose object
-#geometry_msgs/Pose2D object_pose
----
-# Result
-string result
