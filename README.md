@@ -54,7 +54,7 @@ If this runs without errors, the package is installed correctly.
 
 ## Using UR simulator
 
-It is also possible to use the simulator of UR. To use this with the Suii robot model you will need the suii_description package. This package is located in [this github repository](https://github.com/RoboHubEindhoven/suii.git). You also will need the UR offline simulator. The offline simulator is available [here](https://www.universal-robots.com/download/?option=16594#section16593). We used version 3.4.5, this worked for us. After downloading the offline simulator, unpack it in a folder you prefer.
+It is also possible to use the simulator of UR. To use this with the Suii robot model you will need the suii_description package. This package is located in [this github repository](https://github.com/RoboHubEindhoven/suii.git). You also will need the UR offline simulator. The offline simulator is available [here](https://www.universal-robots.com/download/?option=16594#section16593). We used version 3.4.5-100, this worked for us. After downloading the offline simulator, unpack it in a folder you prefer.
 
 ### Test offline simulator
 
