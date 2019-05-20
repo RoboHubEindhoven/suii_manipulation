@@ -10,9 +10,7 @@ You will need the ur_modern_driver package from ThomasTimm. You can intall this 
 
 ```
 cd catkin_ws/src
-```
 git clone https://github.com/ThomasTimm/ur_modern_driver.git
-```
 sudo apt-get install ros-kinetic-ur-*
 ```
 
