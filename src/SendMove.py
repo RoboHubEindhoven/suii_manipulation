@@ -11,7 +11,7 @@ from tf.transformations import quaternion_from_euler, euler_from_quaternion
 class SendMove (object):
     def __init__(self):
         self.pub = rospy.Publisher('/ur_driver/URScript', String, queue_size=10, latch=True)
-        self.addr = '/home/suii/catkin_ws/src/ur_script_control/yaml/poses.yaml'
+        self.addr = '/home/suii/catkin_ws/src/suii_manipulation/yaml/poses.yaml'
 
     def buildMove(self, moveType, space, pose, radius=0):
         if moveType == "l":
