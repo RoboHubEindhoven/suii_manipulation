@@ -14,6 +14,19 @@ class SendMove (object):
         self.addr = '/home/suii/catkin_ws/src/suii_manipulation/yaml/poses.yaml'
 
     def buildMove(self, moveType, space, pose, radius=0):
+        """This function builds a string for sending a move command to URScript
+        
+        Arguments:
+            moveType {string} -- [description]
+            space {string} -- [description]
+            pose {string} -- [description]
+        
+        Keyword Arguments:
+            radius {int} -- [description] (default: {0})
+        
+        Returns:
+            [type] -- [description]
+        """
         if moveType == "l":
             acceleration = 0.3
             speed = 0.3

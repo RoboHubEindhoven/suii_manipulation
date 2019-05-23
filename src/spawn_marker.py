@@ -20,12 +20,12 @@ if __name__ == '__main__':
             marker.id = 0
             marker.type = Marker.CUBE
             marker.action = Marker.ADD
-	    vision =  rospy.wait_for_message("/vision_data", Pose)
-	    print(vision)
-            marker.pose.position.x = vision.position.x
-            marker.pose.position.y = vision.position.y
+	        # vision =  rospy.wait_for_message("/vision_data", Pose)
+	        # print(vision)
+            marker.pose.position.x = -0.15
+            marker.pose.position.y = -0.10
             marker.pose.position.z = -0.41
-            (x, y, z, w) = tf.transformations.quaternion_from_euler(0, 0, vision.orientation.z - pi/2)
+            (x, y, z, w) = tf.transformations.quaternion_from_euler(0, 0, pi/4)
             marker.pose.orientation.x = x
             marker.pose.orientation.y = y
             marker.pose.orientation.z = z
@@ -38,12 +38,12 @@ if __name__ == '__main__':
             marker.color.g = 1.0
             marker.color.b = 0.0
 
-	    if vision.orientation.z < 0:
-	    	angle = -vision.orientation.z - pi/2
-	    elif vision.orientation.z > 0:
-	    	angle = -vision.orientation.z + pi/2
+	        # if vision.orientation.z < 0:
+	        # 	angle = -vision.orientation.z - pi/2
+	        # elif vision.orientation.z > 0:
+	        # 	angle = -vision.orientation.z + pi/2
 
-            #angle = -pi/4
+            angle = -pi/4
 
             pub_marker.publish(marker)
 
