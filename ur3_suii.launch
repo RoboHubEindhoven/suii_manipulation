@@ -24,7 +24,7 @@
     <arg name="prefix" value="$(arg prefix)" />
   </include>
 
-  <node pkg="tf" type="static_transform_publisher" name="camera_link_broadcaster" args="0 -0.1 0.1 0 1 0 0 ur3/tool0 camera 100" />
+  <node pkg="tf" type="static_transform_publisher" name="camera_link_broadcaster" args="0 -0.044877 0.105 0 1 0 0 ur3/tool0 camera 100" />
 
 </launch>
 
