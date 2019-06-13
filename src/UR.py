@@ -47,12 +47,12 @@ class UR():
         [rx,ry,rz] = self.m.euler2Rot(roll, pitch, yaw)
         blend_radius = 0.01
 
-	if "HOLDER" in link:
-	     self.m.sendMove(self.m.letURbuildMove('j', '', [x, y, z + 0.05, rx, ry, rz], blend_radius))
-             self.waitForArm()
-	else:
-             self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], blend_radius))        
-	     self.waitForArm()
+        if ("HOLDER" in link):
+            self.m.sendMove(self.m.letURbuildMove('j', '', [x, y, z + 0.05, rx, ry, rz], blend_radius))
+            self.waitForArm()
+        else:
+            self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], blend_radius))
+            self.waitForArm()
 
         self.moveTool([x, y, z, rx, ry, rz])
 
@@ -136,7 +136,7 @@ class UR():
     def waitForArm(self):
         """[This function waits till the arm reached it's position, by waiting till tool velocity is zero.]
         """
-        time.sleep(0.3) #0.3 value for real ur3 otherwise arm has no time to get speed
+        time.sleep(0.5) #0.3 value for real ur3 otherwise arm has no time to get speed
         while (abs(self.xVel) > 0.0001 or abs(self.yVel) > 0.0001 or abs(self.zVel) > 0.0001) and not rospy.is_shutdown():
             rospy.loginfo_throttle(1, "Robot is moving to position")
         rospy.loginfo("Robot reached position")

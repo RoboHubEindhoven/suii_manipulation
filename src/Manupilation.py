@@ -51,13 +51,16 @@ class Manipulation():
 
         if self.t.canTransform("ur3/base", self.pickLink, rospy.Time(0)):
 
-            if (self.UR3.tool[0] < 0 and ("HOLDER" in self.pickLink)) or (self.UR3.tool[0] > 0 and ("table" in self.pickLink)):
+            x = self.t.lookupTransform("ur3/base", self.pickLink, rospy.Time(0))[0][1]
+
+            if (self.UR3.tool[1] < 0 and x > 0) or (self.UR3.tool[1] > 0 and x < 0):
                 self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
                 self.UR3.waitForArm()
 
             self.UR3.onTF(self.pickLink, "Pick")
             status = 0
-        elif "HOLDER" in self.pickLink:
+
+        elif ("HOLDER" in self.pickLink):
             self.UR3.goHolder(self.pickLink, "Pick")
             status = 0
         else:
@@ -72,15 +75,19 @@ class Manipulation():
 
         if self.t.canTransform("ur3/base", self.placeLink, rospy.Time(0)):
 
-	    if (self.UR3.tool[0] < 0 and ("HOLDER" in self.placeLink)) or (self.UR3.tool[0] > 0 and ("table" in self.placeLink)):
-	        self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
-	        self.UR3.waitForArm()
+            x = self.t.lookupTransform("ur3/base", self.placeLink, rospy.Time(0))[0][1]
+
+            if (self.UR3.tool[1] < 0 and x > 0) or (self.UR3.tool[1] > 0 and x < 0):
+	            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
+	            self.UR3.waitForArm()
 
             self.UR3.onTF(self.placeLink, "Place")
             status = 0
+
         elif "HOLDER" in self.placeLink:
             self.UR3.goHolder(self.placeLink, "Place")
             status = 0
+
         else:
             status = 1
             rospy.logwarn("Invalid link: %s", self.placeLink)

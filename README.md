@@ -62,7 +62,7 @@ To test if your package is installed correctly run:
 
 ```
 roslaunch ur_modern_driver ur3_suii.launch
-rosrun suii_manipulation Manipulaiton.py
+rosrun suii_manipulation UR3_Control.py
 ```
 
 If this runs without errors, the package is installed correctly.
@@ -87,5 +87,4 @@ rosrun rviz rviz
 ```
 
 And add **RobotModel** to rviz.
-
 
