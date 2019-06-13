@@ -24,7 +24,7 @@ class UR():
         self.gripper.moveGripper("Open")
 
         #Go to initial position
-        self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('TestPose2')))
+        self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('tempScan')))
         self.waitForArm()
 
     def onTF(self, link, state):
@@ -45,9 +45,14 @@ class UR():
         qrw = transform[1][3]
         [roll, pitch, yaw] = tf.transformations.euler_from_quaternion([qrx, qry, qrz, qrw])
         [rx,ry,rz] = self.m.euler2Rot(roll, pitch, yaw)
+        blend_radius = 0.01
 
-        self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], radius=0.01))
-        self.waitForArm()
+	if "HOLDER" in link:
+	     self.m.sendMove(self.m.letURbuildMove('j', '', [x, y, z + 0.05, rx, ry, rz], blend_radius))
+             self.waitForArm()
+	else:
+             self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], blend_radius))        
+	     self.waitForArm()
 
         self.moveTool([x, y, z, rx, ry, rz])
 
@@ -87,9 +92,9 @@ class UR():
         """
         rospy.loginfo("Going to holderplace %s", holderPlace)
         if holderPlace == "HOLDER_1":
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder1')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('preHOLDER_1')))
             self.waitForArm()
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalHolder1')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('HOLDER_1')))
             self.waitForArm()
             
             if picking == "Pick":
@@ -97,13 +102,13 @@ class UR():
             elif picking == "Place":
                 self.gripper.moveGripper("Open")
 
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder1')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('preHOLDER_1')))
             self.waitForArm()
 
         elif holderPlace == "HOLDER_2":
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder2')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('preHOLDER_2')))
             self.waitForArm()
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalHolder2')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('HOLDER_2')))
             self.waitForArm()
             
             if picking == "Pick":
@@ -111,13 +116,13 @@ class UR():
             elif picking == "Place":
                 self.gripper.moveGripper("Open")
 
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder2')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('preHOLDER_2')))
             self.waitForArm()
            
         elif holderPlace == "HOLDER_3":
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder3')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('preHOLDER_3')))
             self.waitForArm()
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalHolder4')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('HOLDER_3')))
             self.waitForArm()
 
             if picking == "Pick":
@@ -125,7 +130,7 @@ class UR():
             elif picking == "Place":
                 self.gripper.moveGripper("Open")
 
-            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('finalPreHolder2')))
+            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('preHOLDER_3')))
             self.waitForArm()
 
     def waitForArm(self):
@@ -135,6 +140,11 @@ class UR():
         while (abs(self.xVel) > 0.0001 or abs(self.yVel) > 0.0001 or abs(self.zVel) > 0.0001) and not rospy.is_shutdown():
             rospy.loginfo_throttle(1, "Robot is moving to position")
         rospy.loginfo("Robot reached position")
+
+    def waitForArmBlend(self, pose, radius):
+        while abs(sqrt((self.tool[0]-pose[0])**2 + (self.tool[1]-pose[1])**2 + (self.tool[2]-pose[2])**2)) > radius:
+            rospy.loginfo_throttle(1, "Moving to blend radius")
+        rospy.loginfo("Robot reached blend radius")
 
     def isPoseReachable(self, pose):
         """[This function checks if the goal position is within reach of UR3]
@@ -166,16 +176,16 @@ class UR():
         self.rzVel = msg.twist.angular.z
 
     def getToolTF(self, msg):
-        if len(msg.transforms) == 0:
-            return
-            if msg.transforms[-1].child_frame_id == "ur3/tool0_controller":
-                x = msg.transforms[-1].transform.translation.x
-                y = msg.transforms[-1].transform.translation.y
-                z = msg.transforms[-1].transform.translation.z
-                qx = msg.transforms[-1].transform.rotation.x
-                qy = msg.transforms[-1].transform.rotation.y
-                qz = msg.transforms[-1].transform.rotation.z
-                qw = msg.transforms[-1].transform.rotation.w
-                [roll, pitch, yaw] = tf.transformations.euler_from_quaternion([qx, qy, qz, qw])
-                [rx, ry, rz] = self.m.euler2Rot(roll, pitch, yaw)
-                self.tool = [x,y,z,rx,ry,rz]
+        # if len(msg.transforms) == 0:
+        #     return
+        if msg.transforms[-1].child_frame_id == "ur3/tool0_controller":
+            x = msg.transforms[-1].transform.translation.x
+            y = msg.transforms[-1].transform.translation.y
+            z = msg.transforms[-1].transform.translation.z
+            qx = msg.transforms[-1].transform.rotation.x
+            qy = msg.transforms[-1].transform.rotation.y
+            qz = msg.transforms[-1].transform.rotation.z
+            qw = msg.transforms[-1].transform.rotation.w
+            [roll, pitch, yaw] = tf.transformations.euler_from_quaternion([qx, qy, qz, qw])
+            [rx, ry, rz] = self.m.euler2Rot(roll, pitch, yaw)
+            self.tool = [x,y,z,rx,ry,rz]
