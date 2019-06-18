@@ -5,7 +5,7 @@
 #define BaudRate      (1000000ul)
 #define ID        (1u)
 
-// Torque values (0 t7 1023)
+// Torque values (0 to 1023)
 const int torquePick = 800;
 int openingPositionPick = 0;
 int openingPositionValue =0;
