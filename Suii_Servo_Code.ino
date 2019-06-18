@@ -3,7 +3,7 @@
 // Define communication variables for Servo
 #define DirectionPin   (2u)
 #define BaudRate      (1000000ul)
-#define ID        (8u)//was 1u
+#define ID        (1u)
 
 // Torque values (0 t7 1023)
 const int torquePick = 800;
@@ -27,11 +27,6 @@ void setup()
   delay(20);
   ax12a.setMaxTorque(ID,1023);
   delay(20);
-  //ax12a.sendAXPacket(1,);
-  //ax12a.setLedAlarm();
-  //delay(20);
-
-  //Serial.begin(9600);
 }
 
 int openingPositionFunction(int val){
@@ -56,45 +51,29 @@ void loop()
  val = analogRead(analogPin);//the UR3 should give a predetermined voltage value between 0 and 5v
 
   if (val >=817 ) {//4 volts or more
-      
+    
 //Closing on torque controll
       ax12a.setEndless(ID, true);
       delay(20);
-      //Serial.println("Closing Gripper...");
-      delay(10);
       ax12a.turn(ID, true, torquePick);
       delay(20);
-      //Serial.println(ax12a.readPosition(ID));
-      delay(20);
-     
   }
   
   if (val >=205 && val<=816 ) {//between 1 and 4 volts
-      val = analogRead(analogPin);
+    
+//Prepick position
       openingPositionValue=openingPositionFunction(val);
       ax12a.setEndless(ID, false);
       delay(20);
-      //Serial.println("Opening Gripper for picking...");
-      //delay(10);
       ax12a.moveSpeed(ID, openingPositionValue, openingSpeed);
-      //Serial.print("openingPositionValue:");
-      //Serial.println(openingPositionValue);
       delay(20);
-      //Serial.print("servoReadPosition:");
-      //Serial.println(ax12a.readPosition(ID));
-      //delay(20);
   }
   else if (val <=204) {// 1 volt or less
+    
 //The default open position of the gripper
       ax12a.setEndless(ID, false);
       delay(20);
-      //Serial.println("Opening Gripper...");
-      //delay(10);
       ax12a.moveSpeed(ID, openingPosition, openingSpeed);
       delay(20);
-      //Serial.println(ax12a.readPosition(ID));
-      //delay(20);
   }
-
-  
 }
