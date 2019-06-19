@@ -56,7 +56,9 @@ class Manipulation():
             if (self.UR3.tool[1] < 0 and x > 0) or (self.UR3.tool[1] > 0 and x < 0):
                 self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
                 self.UR3.waitForArm()
-
+		
+	    self.UR3.gripper("prepick", self.pickLink)
+	
             self.UR3.onTF(self.pickLink, "Pick")
             status = 0
 
