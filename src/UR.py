@@ -155,7 +155,7 @@ class UR():
         Returns:
             [bool] -- [True if is within reach, else false]
         """
-        maxReach = 0.538
+        maxReach = 0.70
         minReach = 0.064
         x = pose[0] 
         y = pose[1]
