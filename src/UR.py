@@ -24,7 +24,7 @@ class UR():
         self.gripper.moveGripper("Open")
 
         #Go to initial position
-        self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('tempScan')))
+        self.m.sendMove(self.m.buildMove('j', '', self.m.getPos('scanPosition0')))
         self.waitForArm()
 
     def onTF(self, link, state):
