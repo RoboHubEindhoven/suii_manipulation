@@ -38,8 +38,9 @@ class Gripper():
                 set_analog_out(0,0.15)
                 time.sleep(1)
             else:
+                rospy.logwarn("Invalid objectname:", objectName)
                 set_analog_out(0,0.45)
                 time.sleep(1)
                 pass
         else:
-            rospy.loginfo("Invalid input: %s", str(pos))
+            rospy.logwarn("Invalid input: %s", str(pos))
