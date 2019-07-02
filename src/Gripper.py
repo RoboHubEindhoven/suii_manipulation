@@ -37,10 +37,9 @@ class Gripper():
             elif ("40" in objectName) or objectName=="M30" or objectName=="BEARING_BOX" or objectName=="MOTOR" :#prepick for the largesized objects
                 set_analog_out(0,0.15)
                 time.sleep(1)
-            else:
-                rospy.logwarn("Invalid objectname:", objectName)
+            elif ("HOLDER" in objectName):
                 set_analog_out(0,0.45)
                 time.sleep(1)
                 pass
         else:
-            rospy.logwarn("Invalid input: %s", str(pos))
+            rospy.loginfo("Invalid input: %s", str(pos))
