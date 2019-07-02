@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+    This launch file launces arm stuff
+-->
+<launch>
+   
+  <!-- ur3 Suii -->
+  <include file="$(find ur_modern_driver)/launch/ur3_suii.launch"/>
+  
+
+  <!-- Manipulation node (services) -->
+  <node pkg="suii_manipulation" type="Manipulation.py" name="Manipulation" />
+
+</launch>
