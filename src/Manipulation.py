@@ -2,7 +2,6 @@
 import rospy
 import time
 from UR import UR
-from Gripper import Gripper
 from SendMove import SendMove
 from tf2_msgs.msg import TFMessage
 from geometry_msgs.msg import Pose, TwistStamped
@@ -56,8 +55,8 @@ class Manipulation():
             if (self.UR3.tool[1] < 0 and x > 0) or (self.UR3.tool[1] > 0 and x < 0):
                 self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
                 self.UR3.waitForArm()
-		
-	    self.UR3.gripper("prepick", self.pickLink)
+	 
+	        self.UR3.gripper.moveGripper("prepick", self.pickLink)
 	
             self.UR3.onTF(self.pickLink, "Pick")
             status = 0
