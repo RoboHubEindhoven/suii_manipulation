@@ -47,10 +47,10 @@ class UR():
         [rx,ry,rz] = self.m.euler2Rot(roll, pitch, yaw)
         blend_radius = 0.01
 
-        if ("HOLDER" in link):
-            self.m.sendMove(self.m.letURbuildMove('j', '', [x, y, z + 0.05, rx, ry, rz], blend_radius))
-            self.waitForArm()
-        else:
+        #if ("HOLDER" in link):
+        #  self.m.sendMove(self.m.letURbuildMove('j', '', [x, y, z + 0.05, rx, ry, rz], blend_radius))
+        #   self.waitForArm()
+        #else:
             self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], blend_radius))
             self.waitForArm()
 
