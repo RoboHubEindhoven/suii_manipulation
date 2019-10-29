@@ -13,10 +13,8 @@ If there are additional joints present then the robot will save those also.
 This will not be good for the understanding of the position for the other apps.
  """
 
-import sys
 import rospy
 import yaml
-import string
 from sensor_msgs.msg import JointState
 
 class CopyPose(object):
