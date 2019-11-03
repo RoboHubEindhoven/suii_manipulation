@@ -2,39 +2,45 @@ import socket
 import sys
 import time
 
-# UR Robot IP address
-HOST = "192.168.104.999"
-# port for the ur dashboard server cb-series
-PORT = 29999
 
-
-class UrManager (object):
+class UrControlPanel (object):
     def __init__(self, host):
         """
         Initialize a socket connection to the UR server.
 
         :param host: The UR IP address
         """
+        # port for the ur dashboard server cb-series
+        port = 29999
         print('# Creating socket')
         try:
             self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         except socket.error:
             print('Failed to create socket')
             sys.exit()
-        self.s.bind((HOST, PORT))
+        self.s.bind((host, port))
         self.s.listen(5)
         self.con, address = self.s.accept()
 
     def __str__(self):
+        """
+        This is the class'
+        :return:
+        """
         version, mode, safety = self.get_robot_info()
         return "{}\n{}\n{}\n".format(version, mode, safety)
 
     def send_data(self, data):
+        """
+        Most of the time the ur will react with an status or answer but you could also just send your info and don't
+        care what is comming back therefore this function.
+        :param data:  The string of data you want to send.
+        :return: returns whats is send or an error.
+        """
         try:
             # Send data to UR
             data = data + "\n" if not data.endswith("\n") else data
             self.con.sendall(data)
-
         except Exception as e:
             print("send failed: {}".format(e))
             return "Failed to send"
@@ -49,15 +55,14 @@ class UrManager (object):
         """
         try:
             # Send data to UR
+            data = data + "\n" if not data.endswith("\n") else data
             self.con.sendall(data)
             # Receive data
             print('# Receive data from server')
             reply = self.con.recv(4096)
-
         except Exception as e:
             print("send failed: {}".format(e))
             return "Failed to send"
-
         return reply
 
     def disconnect(self):
@@ -68,8 +73,8 @@ class UrManager (object):
         try:
             answer = self.request("quit")
             self.con.shutdown(socket.SHUT_RDWR)
-        except:
-            answer = "Ur not correctly shutdown"
+        except Exception as e:
+            answer = "Ur not correctly shutdown, error: {}".format(e)
         finally:
             self.con.close()
         return answer
@@ -175,6 +180,10 @@ class UrManager (object):
             return self.get_robot_mode()
 
     def get_robot_mode(self, act_on_mode=False):
+        """
+        :param act_on_mode: Do something to get out of the mode automaticaly and into the an idle mode.
+        :return: robotmode
+        """
         if act_on_mode:
             mode = self.request("robotmode")
             if "CONFIRM_SAFETY" in mode:
@@ -193,9 +202,14 @@ class UrManager (object):
             return self.request("robotmode")
 
     def ur_command_switch(self, string):
+        """
+        This script will parse the command to the needed commands towards the ur.
+        You can give the following commands: init_robot, unlock_protective_stop, shutdown_robotarm, power_on_robotarm,
+        :param string: the command
+        :return: the robotmode, or generated status.
+        """
         if string is "init_robot":
             self.power_on_robot()
-
             resp = self.get_robot_mode()
         elif string is "unlock_protective_stop":
             self.close_safety_popup()
