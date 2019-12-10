@@ -51,8 +51,8 @@ class UR():
         #  self.m.sendMove(self.m.letURbuildMove('j', '', [x, y, z + 0.05, rx, ry, rz], blend_radius))
         #   self.waitForArm()
         #else:
-            self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], blend_radius))
-            self.waitForArm()
+        self.m.sendMove(self.m.buildMove('j', 'p', [x, y, z + 0.05, rx, ry, rz], blend_radius))
+        self.waitForArm()
 
         self.moveTool([x, y, z, rx, ry, rz])
 

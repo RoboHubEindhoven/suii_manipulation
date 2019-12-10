@@ -28,11 +28,11 @@ class SendMove(object):
             [type] -- [description]
         """
         if moveType == "l":
-            acceleration = 0.3
-            speed = 0.3
+            acceleration = 1
+            speed = 2
         else:
-            acceleration = 1.0  #Joint acceleration in rad/s^2
-            speed = 1.0 #Joint speed in rad/s
+            acceleration = 2.0  #Joint acceleration in rad/s^2
+            speed = 4.0 #Joint speed in rad/s
         time = 0 #Time the move must take
         array = list(pose)
         sendable = "move%s(%s%s, a=%s, v=%s, t=%s, r=%s)"%(moveType, space, array, acceleration, speed, time, radius)
