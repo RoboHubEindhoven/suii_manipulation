@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import sys
+import sys, os
 import rospy
+import rospkg
 import std_msgs
 import yaml
 from std_msgs.msg import String
@@ -9,9 +10,11 @@ import numpy as np
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
 class SendMove(object):
-    def __init__(self):
+    def __init__(self, debug=True):
+        rp = rospkg.RosPack()
         self.pub = rospy.Publisher('/ur_driver/URScript', String, queue_size=10, latch=True)
-        self.addr = '/home/suii/catkin_ws/src/suii_manipulation/yaml/poses.yaml'
+        self.addr = os.path.join(rp.get_path("suii_manipulation") ,"yaml", "poses.yaml")
+        self.debug = debug
 
     def buildMove(self, moveType, space, pose, radius=0):
         """This function builds a string for sending a move command to URScript
@@ -108,6 +111,16 @@ class SendMove(object):
         st.data = string
         self.pub.publish(st)
         print st.data
+    
+    def sendTrajectory(self, trajectory):
+        """
+        :param trajectory: (Trajectory) 
+        """
+        st = String()
+        st.data = trajectory.get_string()
+        self.pub.publish(st)
+        if self.debug:
+            print("This is the trajectory that is send \n{}".format(st.data))
 
     def searchStringInYaml(self,string):
         with open(self.addr) as f:
