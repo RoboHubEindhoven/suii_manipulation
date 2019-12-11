@@ -18,9 +18,9 @@ class UrControlPanel (object):
         except socket.error:
             print('Failed to create socket')
             sys.exit()
-        self.s.bind((host, port))
-        self.s.listen(5)
-        self.con, address = self.s.accept()
+        self.s.connect((host, port))
+        #self.s.listen(5)
+        #self.con, address = self.s.accept()
 
     def __str__(self):
         """
@@ -40,7 +40,7 @@ class UrControlPanel (object):
         try:
             # Send data to UR
             data = data + "\n" if not data.endswith("\n") else data
-            self.con.sendall(data)
+            self.s.sendall(data)
         except Exception as e:
             print("send failed: {}".format(e))
             return "Failed to send"
@@ -56,10 +56,10 @@ class UrControlPanel (object):
         try:
             # Send data to UR
             data = data + "\n" if not data.endswith("\n") else data
-            self.con.sendall(data)
+            self.s.sendall(data)
             # Receive data
             print('# Receive data from server')
-            reply = self.con.recv(4096)
+            reply = self.s.recv(4096)
         except Exception as e:
             print("send failed: {}".format(e))
             return "Failed to send"
@@ -72,11 +72,11 @@ class UrControlPanel (object):
         """
         try:
             answer = self.request("quit")
-            self.con.shutdown(socket.SHUT_RDWR)
+            self.s.shutdown(socket.SHUT_RDWR)
         except Exception as e:
             answer = "Ur not correctly shutdown, error: {}".format(e)
         finally:
-            self.con.close()
+            self.s.close()
         return answer
 
     def get_robot_info(self):
@@ -155,34 +155,39 @@ class UrControlPanel (object):
                 return mode  # Well fuck this can be a problem with the Control Box, Check power and other connections
             time.sleep(0.1)
 
-    def check_safety_mode(self, fix = False):
-        mode = self.request("safetymode")
-        if "NORMAL" in mode:
-            return mode
-        elif "REDUCED" in mode:
-            return mode
-        elif "PROTECTIVE_STOP" in mode:
-            self.unlock_protective_stop()
-            self.wait_for_robot_status("IDLE")
-            return self.get_robot_mode()
-        elif "RECOVERY" in mode:
-            return mode
-        elif ("SAFEGUARD_STOP" or "SYSTEM_EMERGENCY_STOP" or "ROBOT_EMERGENCY_STOP") in mode:
-            self.request("restart safety")
-            self.wait_for_robot_status("POWER_OFF")
-            self.power_on_robot()
-            return self.get_robot_mode()
+    def check_safety_mode(self):
+        """
+        Returns the safety status of the robot.
+        Can be "Safetymode: <mode>", where <mode> is
+         -  NORMAL
+         -  REDUCED
+         -  PROTECTIVE_STOP
+         -  RECOVERY
+         -  SAFEGUARD_STOP
+         -  SYSTEM_EMERGENCY_STOP
+         -  ROBOT_EMERGENCY_STOP
+         -  VIOLATION
+         -  FAULT
 
-        elif ("VIOLATION" or "FAULT") in mode:
-            self.request("restart safety")
-            self.wait_for_robot_status("POWER_OFF")
-            self.power_on_robot()
-            return self.get_robot_mode()
+        :return:
+        """
+        mode = self.request("safetymode")
+        return mode
 
     def get_robot_mode(self, act_on_mode=False):
         """
-        :param act_on_mode: Do something to get out of the mode automaticaly and into the an idle mode.
-        :return: robotmode
+        returns:
+        "Robotmode: <mode>", where <mode> is
+         -  NO_CONTROLLER
+         -  DISCONNECTED
+         -  CONFIRM_SAFETY
+         -  BOOTING
+         -  POWER_OFF
+         -  POWER_ON
+         -  IDLE
+         -  BACKDRIVE
+         -  RUNNING
+        :return: robotmode string
         """
         if act_on_mode:
             mode = self.request("robotmode")
@@ -199,7 +204,9 @@ class UrControlPanel (object):
             elif "NO_CONTROLLER" in mode:
                 return  # fatal error
         else:
-            return self.request("robotmode")
+            mode = self.request("robotmode")
+            print mode
+            return mode
 
     def ur_command_switch(self, string):
         """
@@ -208,18 +215,26 @@ class UrControlPanel (object):
         :param string: the command
         :return: the robotmode, or generated status.
         """
-        if string is "init_robot":
+        if "init_robot" in string :
             self.power_on_robot()
+            self.wait_for_robot_status("POWER_ON")
+            self.release_brake()
+            self.wait_for_robot_status("RUNNING")
             resp = self.get_robot_mode()
-        elif string is "unlock_protective_stop":
+        elif "unlock_protective_stop" in string:
             self.close_safety_popup()
             self.unlock_protective_stop()
             resp = self.get_robot_mode()
-        elif string is "shutdown_robotarm":
+        elif "get_safety" in string:
+            return self.check_safety_mode()
+        elif "shutdown_robotarm" in string:
             self.shutdown_robot()
             resp = "send shutdown signal"
-        elif string is "power_on_robotarm":
+        elif "power_on" in string:
             self.power_on_robot()
+            resp = self.get_robot_mode()
+        elif "power_off" in string:
+            self.power_off_robot()
             resp = self.get_robot_mode()
         else:
             resp = "[ur_manager]: service command wasn't recognized"

@@ -109,6 +109,17 @@ class SendMove(object):
         self.pub.publish(st)
         print st.data
 
+    def begin_trajectory(self):
+        traj_string = "def trajectory():\n"
+        return traj_string
+
+    def end_trajectory(self, trajectory):
+        trajectory += "end"
+
+    def add_move_to_trajectory(self, trajectory, move):
+        trajectory += "\t" + move + "\n"
+        return trajectory
+
     def searchStringInYaml(self,string):
         with open(self.addr) as f:
             contents = f.read()
