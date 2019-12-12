@@ -56,7 +56,7 @@ class Manipulation():
                 self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
                 self.UR3.waitForArm()
 	 
-	        self.UR3.gripper.moveGripper("prepick", self.pickLink)
+	    #self.UR3.gripper.moveGripper("prepick", self.pickLink)
 	
             self.UR3.onTF(self.pickLink, "Pick")
             status = 0
