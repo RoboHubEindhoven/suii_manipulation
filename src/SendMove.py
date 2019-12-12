@@ -120,7 +120,7 @@ class SendMove(object):
         st.data = trajectory.get_string()
         self.pub.publish(st)
         if self.debug:
-            print("This is the trajectory that is send \n{}".format(st.data))
+            print(st.data)
 
     def searchStringInYaml(self,string):
         with open(self.addr) as f:

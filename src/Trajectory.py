@@ -21,7 +21,7 @@ class Trajectory(object):
     def __init__(self):
         self.start = "def test():\n"
         self.moves = []
-        self.end = "end\n"
+        self.end = "end"
     
     def __str__(self):
         string = self.start
