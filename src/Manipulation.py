@@ -3,6 +3,7 @@ import rospy
 import time
 from UR import UR
 from SendMove import SendMove
+from Trajectory import Trajectory, Move
 from tf2_msgs.msg import TFMessage
 from geometry_msgs.msg import Pose, TwistStamped
 from std_msgs.msg import String
@@ -25,6 +26,8 @@ class Manipulation():
         self.m = SendMove()
         self.t = tf.TransformListener()
         self.UR3 = UR()
+        self.traj = Trajectory()
+        self.waypointPose = self.m.getPos("safetyStop")
 
 # ----------Service Callbacks----------
     def scan_cb(self, msg):
@@ -47,24 +50,33 @@ class Manipulation():
     def pick_cb(self, msg):
         self.UR3.armPose = ""
         self.pickLink = msg.link
+        self.traj.__init__()
 
         if self.t.canTransform("ur3/base", self.pickLink, rospy.Time(0)):
-
+    
             x = self.t.lookupTransform("ur3/base", self.pickLink, rospy.Time(0))[0][1]
 
             if (self.UR3.tool[1] < 0 and x > 0) or (self.UR3.tool[1] > 0 and x < 0):
-                self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
-                self.UR3.waitForArm()
-	 
-	    #self.UR3.gripper.moveGripper("prepick", self.pickLink)
-	
-            self.UR3.onTF(self.pickLink, "Pick")
+                self.traj.add_move(Move("j","",self.waypointPose, 2,4,0,0.15))
+
+            self.traj.add_move(Move("j","p",self.UR3.getTFPose(self.pickLink, state="PRE"), 2,4,0,0.05))
+            self.traj.add_move(Move("j","p",self.UR3.getTFPose(self.pickLink), 2,4,0,0))
+            self.traj.add_move("set_analog_out(0, 0.45)")
+            #self.traj.add_move("sleep(0.5)")
+            #self.traj.add_move(Move("j","p",self.UR3.getTFPose(self.pickLink, state="PRE"), 2,4,0,0))
+            self.m.sendTrajectory(self.traj)
+            self.UR3.waitForArm()
+            time.sleep(0.2)
+            self.m.sendMove(self.m.buildMove("j", "p", self.UR3.getTFPose(self.pickLink, state="PRE")))
+            self.UR3.waitForArm()
             status = 0
 
         elif ("HOLDER" in self.pickLink):
             self.UR3.goHolder(self.pickLink, "Pick")
+            self.UR3.waitForArm()
             status = 0
         else:
+            self.UR3.waitForArm()
             status = 1
             rospy.logwarn("Invalid link: %s", self.pickLink)
 
@@ -73,23 +85,34 @@ class Manipulation():
     def place_cb(self, msg):
         self.UR3.armPose = ""
         self.placeLink = msg.link
+        self.traj.__init__()
 
         if self.t.canTransform("ur3/base", self.placeLink, rospy.Time(0)):
 
             x = self.t.lookupTransform("ur3/base", self.placeLink, rospy.Time(0))[0][1]
 
             if (self.UR3.tool[1] < 0 and x > 0) or (self.UR3.tool[1] > 0 and x < 0):
-	            self.m.sendMove(self.m.buildMove('j', '', self.m.getPos("safetyStop")))
-	            self.UR3.waitForArm()
+                self.traj.add_move(Move("j","",self.waypointPose, 2,4,0,0.15))
 
-            self.UR3.onTF(self.placeLink, "Place")
+            self.traj.add_move(Move("j","p",self.UR3.getTFPose(self.placeLink, state="PRE"), 2,4,0,0.05))
+            self.traj.add_move(Move("j","p",self.UR3.getTFPose(self.placeLink), 2,4,0,0))
+            self.traj.add_move("set_analog_out(0, 0)")
+            #self.traj.add_move("sleep(0.5)")
+            #self.traj.add_move(Move("j","p",self.UR3.getTFPose(self.placeLink, state="PRE"), 2,4,0,0))
+            self.m.sendTrajectory(self.traj)
+            self.UR3.waitForArm()
+            time.sleep(0.2)
+            self.m.sendMove(self.m.buildMove("j", "p", self.UR3.getTFPose(self.placeLink, state="PRE")))
+            self.UR3.waitForArm()
             status = 0
 
         elif "HOLDER" in self.placeLink:
             self.UR3.goHolder(self.placeLink, "Place")
+            self.UR3.waitForArm()
             status = 0
 
         else:
+            self.UR3.waitForArm()
             status = 1
             rospy.logwarn("Invalid link: %s", self.placeLink)
 

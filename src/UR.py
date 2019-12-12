@@ -73,6 +73,27 @@ class UR():
         # self.m.sendMove(st)
         # time.sleep(t)
 
+    def getTFPose(self, link, state=None):
+        transform = self.t.lookupTransform("ur3/base", link, rospy.Time(0))
+        rospy.loginfo_throttle(5, "Tranformation found for %s"%link)
+        x = transform[0][0]
+        y = transform[0][1]
+        z = transform[0][2]
+        qrx = transform[1][0]
+        qry = transform[1][1]
+        qrz = transform[1][2]
+        qrw = transform[1][3]
+        [roll, pitch, yaw] = tf.transformations.euler_from_quaternion([qrx, qry, qrz, qrw])
+        [rx,ry,rz] = self.m.euler2Rot(roll, pitch, yaw)
+        pose = [x, y, z, rx, ry, rz]
+        prePose = [x, y, z + 0.09, rx, ry, rz]
+
+        if state == "PRE":
+            return prePose
+        else:
+            return pose
+        return pose
+
     def moveTool(self, pose):
         """[This function is used to send the tool to a position in linear tool space]
         
