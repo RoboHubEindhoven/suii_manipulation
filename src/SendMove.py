@@ -54,6 +54,7 @@ class SendMove(object):
         angles = "get_inverse_kin(p%s)"%st
         sendable = "move%s(%s%s, a=%s, v=%s, t=%s, r=%s)"%(moveType, space, angles, acceleration, speed, time, radius)
         return sendable
+    def addWaypointToTrajectory(trajectory, moveType, space, pose, secondPose, radius=0):
 
     def buildBlendMove(self, moveType, space, pose, secondPose, radius=0):
         if moveType == "l":

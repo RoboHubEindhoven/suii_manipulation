@@ -38,7 +38,3 @@ class Trajectory(object):
             self.moves.append(str(move))
         else:
             self.moves.append(move)
-
-
-
-    
